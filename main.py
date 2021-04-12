@@ -23,7 +23,12 @@ dp = Dispatcher(bot=bot, storage=storage)
 urlList = ['https://sfedu.ru/www2/web/student/muam',
            #   'https://sfedu.ru/www/stat_pages15.show?p=LKS/enroll/D'
            ]
-urlResultlist = []
+regexList = [
+    '(Запись завершена)'
+]
+urlResultlist = [
+    'Запись завершена',
+]
 
 
 class AdminSetClass(StatesGroup):
@@ -42,7 +47,7 @@ async def start():
 async def loadPages(s: requests.session):
     for a in range(0, len(urlList)):
         res1 = s.get(urlList[a])
-        res = res1.text
+        res = re.search(regexList[a], res1.text).group(1)
         print(urlList[a])
         print(res)
         print()
@@ -83,7 +88,7 @@ async def c(query: types.CallbackQuery):
     if query.from_user.id == admin0[0]:
         print("изменяем")
         print(str(urlResultlist[0]))
-        urlResultlist[0] = ""
+        urlResultlist[0] = "dfgdsfggsdgsdfgdfsg"
 
 
 async def notifyAdmin0(s: str):
@@ -112,11 +117,9 @@ async def notification_callback_handler(query: types.CallbackQuery):
     await bot.send_message(query.from_user.id, str(answ))
 
 
-@tasks.loop(minutes=10)
+@tasks.loop(minutes=2)
 async def check():
     try:
-        if len(urlResultlist) == 0:
-            await start()
         time.sleep(20)
         print("updating...")
         s = await login()
@@ -126,17 +129,18 @@ async def check():
             for a in range(3):
                 await notifyAdmin0("Тревога")
         print("updated")
-    except Exception:
+    except Exception as e:
         print("Ошиб очка")
+        await bot.send_message(admin0[0], f"Произошла ошибка {e}")
 
 
 async def checkPages(s: requests.session):
     for a in range(0, len(urlList)):
         res1 = s.get(url=urlList[a], allow_redirects=False)
         print(res1.text)
-        if not (res1.text == urlResultlist[a]):
+        if not (urlResultlist[a] in res1.text):
+            
             return False
-
     return True
 
 
