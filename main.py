@@ -71,7 +71,9 @@ async def notification_callback_handler(query: types.CallbackQuery):
 async def updating(query: types.CallbackQuery):
     if query.from_user.id == admin0[0]:
         await check()
-        await bot.send_message(query.from_user.id, "ready")
+        await bot.send_message(query.from_user.id, "готово")
+    else:
+        await bot.send_message(query.from_user.id, "а вот и не угадал")
 
 
 @dp.message_handler(commands=['c'])
@@ -79,7 +81,8 @@ async def c(query: types.CallbackQuery):
     if query.from_user.id == admin0[0]:
         print("Сообщение всем админам")
         for a in admin0:
-            await bot.send_message(a,"Бот был запущен. Пожалуйста, продолжайте проверять страниц самостоятельно. Бота написал я, и даже я ему не доверяю.")
+            await bot.send_message(a,
+                                   "Бот был запущен. Пожалуйста, продолжайте проверять страниц самостоятельно. Бота написал я, и даже я ему не доверяю.")
 
 
 async def notifyAdmin0(s: str):
@@ -96,8 +99,7 @@ async def getUrl(message: types.Message, state: FSMContext):
 
 @dp.message_handler(commands=['help'])
 async def help(query: types.CallbackQuery):
-    answ = "/update вызывает ручное обновление\n/isAdmin проверка, являетесь ли вы админом\naddAdmin добавляет " \
-           "администратора "
+    answ = "/update вызывает ручное обновление\n/isAdmin проверка, являетесь ли вы админом\n/addAdmin добавляет администратора\n/getId выдает ваш id"
     await bot.send_message(query.from_user.id, answ)
 
 
@@ -106,6 +108,22 @@ async def notification_callback_handler(query: types.CallbackQuery):
     answ = admin1.__contains__(query.from_user.id) or admin2.__contains__(query.from_user.id) or admin0.__contains__(
         query.from_user.id)
     await bot.send_message(query.from_user.id, str(answ))
+
+
+@dp.message_handler(commands=['addAdmin'])
+async def add_Admin(message: types.Message):
+    if message.from_user.id not in admin0:
+        await message.reply("Погоди, но ты же сам не из админов -_-")
+    else:
+        try:
+            msg = message.get_args()
+            if (int(msg) in admin0) or (int(msg) in admin1):
+                await message.reply("Уже админ")
+                return
+            admin1.append(int(msg))
+            await message.reply("Новый админ добавлен.")
+        except Exception as e:
+            await message.reply("Произошла ошибка(")
 
 
 @tasks.loop(minutes=15)
