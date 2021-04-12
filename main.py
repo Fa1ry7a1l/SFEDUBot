@@ -61,14 +61,6 @@ async def process_start_command(message: types.Message):
     await message.reply("Приветик")
 
 
-@dp.message_handler(commands=['startServer'])
-async def startingServer(query: types.CallbackQuery):
-    if query.from_user.id == admin0[0]:
-        await bot.send_message(query.from_user.id, "starting...")
-        await start()
-        await bot.send_message(query.from_user.id, "started")
-
-
 @dp.message_handler(commands=['getId'])
 async def notification_callback_handler(query: types.CallbackQuery):
     print("hands update. user: " + str(query.from_user.id))
@@ -82,18 +74,18 @@ async def updating(query: types.CallbackQuery):
         await bot.send_message(query.from_user.id, "ready")
 
 
-#@dp.message_handler(commands=['c'])
+@dp.message_handler(commands=['c'])
 async def c(query: types.CallbackQuery):
     if query.from_user.id == admin0[0]:
-        print("изменяем")
-        print(str(urlResultlist[0]))
-        urlResultlist[0] = "dfgdsfggsdgsdfgdfsg"
+        print("Сообщение всем админам")
+        for a in admin0:
+            await bot.send_message(a,"Бот был запущен. Пожалуйста, продолжайте проверять страниц самостоятельно. Бота написал я, и даже я ему не доверяю.")
 
 
 async def notifyAdmin0(s: str):
-    # for a in admin0:
-    # print("notify" + f" {a}")
-    await bot.send_message(362837453, s)
+    for a in admin0:
+        print("notify" + f" {a}")
+        await bot.send_message(a, s)
 
 
 @dp.message_handler(state=AdminSetClass.otvet)
@@ -135,8 +127,8 @@ async def check():
 async def checkPages(s: requests.session):
     for a in range(0, len(urlList)):
         res1 = s.get(url=urlList[a], allow_redirects=False)
-        print(res1.text)
         if not (urlResultlist[a] in res1.text):
+            print(res1.text)
             return False
     return True
 
