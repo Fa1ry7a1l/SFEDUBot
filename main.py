@@ -108,7 +108,7 @@ async def notification_callback_handler(query: types.CallbackQuery):
     await bot.send_message(query.from_user.id, str(answ))
 
 
-@tasks.loop(minutes=10)
+@tasks.loop(minutes=15)
 async def check():
     try:
         print("updating...")
