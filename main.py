@@ -1,5 +1,4 @@
 import re
-import time
 
 from discord.ext import commands, tasks
 
@@ -83,7 +82,7 @@ async def updating(query: types.CallbackQuery):
         await bot.send_message(query.from_user.id, "ready")
 
 
-@dp.message_handler(commands=['c'])
+#@dp.message_handler(commands=['c'])
 async def c(query: types.CallbackQuery):
     if query.from_user.id == admin0[0]:
         print("изменяем")
@@ -117,10 +116,9 @@ async def notification_callback_handler(query: types.CallbackQuery):
     await bot.send_message(query.from_user.id, str(answ))
 
 
-@tasks.loop(minutes=2)
+@tasks.loop(minutes=10)
 async def check():
     try:
-        time.sleep(20)
         print("updating...")
         s = await login()
         flag = await checkPages(s)
@@ -139,7 +137,6 @@ async def checkPages(s: requests.session):
         res1 = s.get(url=urlList[a], allow_redirects=False)
         print(res1.text)
         if not (urlResultlist[a] in res1.text):
-            
             return False
     return True
 
