@@ -59,6 +59,8 @@ async def loadPages(s: requests.session):
 async def process_start_command(message: types.Message):
     print("process_start_command started")
     await message.reply("Приветик")
+    await bot.send_message(a,
+                           "Бот был запущен. Пожалуйста, продолжайте проверять страниц самостоятельно. Бота написал я, и даже я ему не доверяю.")
 
 
 @dp.message_handler(commands=['getId'])
