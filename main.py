@@ -91,6 +91,9 @@ async def notifyAdmin0(s: str):
     for a in admin0:
         print("notify" + f" {a}")
         await bot.send_message(a, s)
+    for a in admin1:
+        print("notify" + f" {a}")
+        await bot.send_message(a, s)
 
 
 @dp.message_handler(state=AdminSetClass.otvet)
@@ -124,6 +127,7 @@ async def add_Admin(message: types.Message):
                 return
             admin1.append(int(msg))
             await message.reply("Новый админ добавлен.")
+            await bot.send_message(int(msg), "Вы были добавлины в список")
         except Exception as e:
             await message.reply("Произошла ошибка(")
 
