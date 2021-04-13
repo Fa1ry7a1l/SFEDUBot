@@ -137,7 +137,7 @@ async def check():
             if not flag:
                 for a in range(3):
                     await notifyAdmin0("Тревога")
-            await bot.send_document(admin0[0], open("page.html", "br"))
+                await bot.send_document(admin0[0], open("page.html", "br"))
         print("updated")
     except Exception as e:
         print("Ошиб очка")
