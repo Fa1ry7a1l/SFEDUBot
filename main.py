@@ -1,4 +1,5 @@
 import re
+import time
 
 from discord.ext import commands, tasks
 
@@ -16,7 +17,7 @@ bot = Bot(token=TOKEN)
 
 storage = MemoryStorage()
 admin0 = [362837453, 297054806, 362032370, 547605427]
-admin1 = [753076251, 461796763]
+admin1 = [753076251, 461796763, 933391577]
 admin2 = [int]
 dp = Dispatcher(bot=bot, storage=storage)
 urlList = ['https://sfedu.ru/www2/web/student/muam',
@@ -59,8 +60,6 @@ async def loadPages(s: requests.session):
 async def process_start_command(message: types.Message):
     print("process_start_command started")
     await message.reply("Приветик")
-    await bot.send_message(a,
-                           "Бот был запущен. Пожалуйста, продолжайте проверять страниц самостоятельно. Бота написал я, и даже я ему не доверяю.")
 
 
 @dp.message_handler(commands=['getId'])
@@ -81,10 +80,7 @@ async def updating(query: types.CallbackQuery):
 @dp.message_handler(commands=['c'])
 async def c(query: types.CallbackQuery):
     if query.from_user.id == admin0[0]:
-        print("Сообщение всем админам")
-        for a in admin0:
-            await bot.send_message(a,
-                                   "Бот был запущен. Пожалуйста, продолжайте проверять страниц самостоятельно. Бота написал я, и даже я ему не доверяю.")
+        urlResultlist[0] = "asdasdasdsdasd"
 
 
 async def notifyAdmin0(s: str):
@@ -104,7 +100,7 @@ async def getUrl(message: types.Message, state: FSMContext):
 
 @dp.message_handler(commands=['help'])
 async def help(query: types.CallbackQuery):
-    answ = "/update вызывает ручное обновление\n/isAdmin проверка, являетесь ли вы админом\n/addAdmin добавляет администратора\n/getId выдает ваш id"
+    answ = "/update вызывает ручное обновление\n/isAdmin проверка, являетесь ли вы админом\n/getId выдает ваш id"
     await bot.send_message(query.from_user.id, answ)
 
 
@@ -115,19 +111,13 @@ async def notification_callback_handler(query: types.CallbackQuery):
     await bot.send_message(query.from_user.id, str(answ))
 
 
-@dp.message_handler(commands=['addAdmin'])
+@dp.message_handler(commands=['text'])
 async def add_Admin(message: types.Message):
     if message.from_user.id not in admin0:
         await message.reply("Погоди, но ты же сам не из админов -_-")
     else:
         try:
-            msg = message.get_args()
-            if (int(msg) in admin0) or (int(msg) in admin1):
-                await message.reply("Уже админ")
-                return
-            admin1.append(int(msg))
-            await message.reply("Новый админ добавлен.")
-            await bot.send_message(int(msg), "Вы были добавлины в список")
+            await notifyAdmin0(message.get_args())
         except Exception as e:
             await message.reply("Произошла ошибка(")
 
@@ -140,8 +130,14 @@ async def check():
         flag = await checkPages(s)
         print(flag)
         if not flag:
-            for a in range(3):
-                await notifyAdmin0("Тревога")
+            time.sleep(60)
+            s = await login()
+            flag = await checkPages(s)
+            print(flag)
+            if not flag:
+                for a in range(3):
+                    await notifyAdmin0("Тревога")
+            await bot.send_document(admin0[0], open("page.html", "br"))
         print("updated")
     except Exception as e:
         print("Ошиб очка")
@@ -153,6 +149,9 @@ async def checkPages(s: requests.session):
         res1 = s.get(url=urlList[a], allow_redirects=False)
         if not (urlResultlist[a] in res1.text):
             print(res1.text)
+            f = open("page.html", 'w', encoding="utf-8")
+            f.write(res1.text)
+            f.close()
             return False
     return True
 
