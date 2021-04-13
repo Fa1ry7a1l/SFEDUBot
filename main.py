@@ -16,7 +16,7 @@ bot = Bot(token=TOKEN)
 
 storage = MemoryStorage()
 admin0 = [362837453, 297054806, 362032370, 547605427]
-admin1 = [int]
+admin1 = [753076251, 461796763]
 admin2 = [int]
 dp = Dispatcher(bot=bot, storage=storage)
 urlList = ['https://sfedu.ru/www2/web/student/muam',
