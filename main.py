@@ -182,11 +182,12 @@ async def login():
     }
 
     s = requests.session()
+    i = 0
     try:
-        s.get(url="https://sfedu.ru/www2/web/student/muam",cookies= s.cookies, allow_redirects=True)
-
+        s.get(url="https://sfedu.ru/www2/web/student/muam", cookies=s.cookies, allow_redirects=True)
+        i = 1
         res1 = s.post(url, headers=headers, data=body, allow_redirects=True)
-
+        i = 2
         wa = re.search(r'(?<=(name="wa" value=")).*?(?=(" \/>))', res1.text).group(0)
         wresult = re.search(r'(?<=(name="wresult" value=")).*?(?=(" \/>))', res1.text).group(0).replace('&lt;',
                                                                                                         '<').replace(
@@ -215,8 +216,8 @@ async def login():
             "wresult": wresult,
             "wctx": wctx,
         }
-        res1 = s.post(url, headers=headers, data=body, allow_redirects=True)
-
+        res1 = s.post(url, headers=headers, cookies=s.cookies, data=body, allow_redirects=True)
+        i = 3
         url = 'https://aadcdn.msftauth.net/shared/1.0/content/js/ConvergedKmsi_Core_41mpWztdGVyDdwYzkhE6VQ2.js'
         headers = {
             "GET": "/shared/1.0/content/js/ConvergedKmsi_Core_41mpWztdGVyDdwYzkhE6VQ2.js HTTP/1.1",
@@ -230,8 +231,8 @@ async def login():
             "DNT": "1",
             "Connection": "close",
         }
-        res1 = s.get(url, headers=headers, allow_redirects=True)
-
+        res1 = s.get(url, cookies=s.cookies, headers=headers, allow_redirects=True)
+        i = 4
         url = 'https://aadcdn.msftauth.net/ests/2.1/content/cdnbundles/ux.converged.kmsi.strings-ru.min_losqnzte13wdgjnift3xyw2.js'
         headers = {
             "GET": "/ests/2.1/content/cdnbundles/ux.converged.kmsi.strings-ru.min_losqnzte13wdgjnift3xyw2.js HTTP/1.1",
@@ -245,8 +246,8 @@ async def login():
             "DNT": "1",
             "Connection": "close",
         }
-        res1 = s.get(url, headers=headers, allow_redirects=True)
-
+        res1 = s.get(url, cookies=s.cookies, headers=headers, allow_redirects=True)
+        i = 5
         url = 'https://sfedu.ru/www2/web/student/connect/azure'
         headers = {
             "GET": "/www2/web/student/connect/azure HTTP/1.1",
@@ -260,14 +261,15 @@ async def login():
             "DNT": "1",
             "Connection": "close",
         }
-        res1 = s.get(url, headers=headers, allow_redirects=False)
+        res1 = s.get(url, cookies=s.cookies, headers=headers, allow_redirects=False)
+        i = 6
         print("Первый запрос")
 
         url = re.search(r'<title>Redirecting to (https://login\.microsoftonline\.com(/.*))</title>', res1.text).group(
             1).replace("&amp;", "&")
         GET = re.search(r'<title>Redirecting to (https://login\.microsoftonline\.com(/.*))</title>', res1.text).group(
             2).replace("&amp;", "&") + " HTTP/1.1"
-        print("Первый запрос окончен")
+
         headers = {
             "GET": GET,
             "Host": "login.microsoftonline.com",
@@ -279,15 +281,19 @@ async def login():
             "DNT": "1",
             "Connection": "close",
         }
-        res1 = s.get(url, headers=headers,cookies=s.cookies, allow_redirects=True)
-
+        res1 = s.get(url, headers=headers, cookies=s.cookies, allow_redirects=True)
+        f = open("error1.html", 'w', encoding="utf-8")
+        f.write(res1.text)
+        f.close()
+        i = 7
+        print("Первый запрос окончен")
 
         print("Второй запрос")
         url = re.search(r'<a href="(https://sfedu.ru(.*))">here</a>.</h2>', res1.text).group(
             1).replace("&amp;", "&")
         GET = re.search(r'<a href="(https://sfedu.ru(.*))">here</a>.</h2>', res1.text).group(
             2).replace("&amp;", "&") + " HTTP/1.1"
-        print("Второй запрос окончен")
+
         headers = {
             "GET": GET,
             "Host": "sfedu.ru",
@@ -301,8 +307,9 @@ async def login():
             "Upgrade-Insecure-Requests": "1"
         }
 
-        res1 = s.get(url, headers=headers, allow_redirects=False)
-
+        res1 = s.get(url, headers=headers, cookies=s.cookies, allow_redirects=False)
+        i = 8
+        print("Второй запрос окончен")
         url = "https://sfedu.ru" + re.search(r'<a href="(.*)">', res1.text).group(
             1).replace("&amp;", "&")
         GET = re.search(r'<a href="(.*)">', res1.text).group(
@@ -319,7 +326,8 @@ async def login():
             "Upgrade-Insecure-Requests": "1"
         }
 
-        res1 = s.get(url, headers=headers, allow_redirects=False)
+        res1 = s.get(url, cookies=s.cookies, headers=headers, allow_redirects=False)
+        i = 9
         return s
     except Exception as e:
         print("Ошибка в авторизации")
@@ -329,6 +337,7 @@ async def login():
         f = open("error.html", 'w', encoding="utf-8")
         f.write(res1.text)
         f.close()
+        await bot.send_document(admin0[0], open("error1.html", "br"))
         await bot.send_document(admin0[0], open("error.html", "br"))
 
     # print(execjs.eval(res1.text))
