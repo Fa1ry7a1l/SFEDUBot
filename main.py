@@ -182,146 +182,154 @@ async def login():
     }
 
     s = requests.session()
-    s.get(url="https://sfedu.ru/www2/web/student/muam", allow_redirects=True)
+    try:
+        s.get(url="https://sfedu.ru/www2/web/student/muam",cookies= s.cookies, allow_redirects=True)
 
-    res1 = s.post(url, headers=headers, data=body, allow_redirects=True)
+        res1 = s.post(url, headers=headers, data=body, allow_redirects=True)
 
-    wa = re.search(r'(?<=(name="wa" value=")).*?(?=(" \/>))', res1.text).group(0)
-    wresult = re.search(r'(?<=(name="wresult" value=")).*?(?=(" \/>))', res1.text).group(0).replace('&lt;',
-                                                                                                    '<').replace(
-        '&quot;', '"')
+        wa = re.search(r'(?<=(name="wa" value=")).*?(?=(" \/>))', res1.text).group(0)
+        wresult = re.search(r'(?<=(name="wresult" value=")).*?(?=(" \/>))', res1.text).group(0).replace('&lt;',
+                                                                                                        '<').replace(
+            '&quot;', '"')
 
-    wctx = re.search(r'(?<=(name="wctx" value=")).*?(?=(" \/>))', res1.text).group(0).replace('&amp;', '&')
+        wctx = re.search(r'(?<=(name="wctx" value=")).*?(?=(" \/>))', res1.text).group(0).replace('&amp;', '&')
 
-    url = 'https://login.microsoftonline.com/login.srf'
-    headers = {
-        "POST": "/login.srf HTTP/1.1",
-        "Host": "login.microsoftonline.com",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
-        "Accept-Encoding": "gzip, deflate",
-        "Prefer": "safe",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Content-Length": "7181",
-        "Origin": "https://adfs.sfedu.ru",
-        "DNT": "1",
-        "Connection": "close",
-        "Referer": "https://adfs.sfedu.ru/",
-        "Upgrade-Insecure-Requests": "1",
-    }
-    body = {
-        "wa": wa,
-        "wresult": wresult,
-        "wctx": wctx,
-    }
-    res1 = s.post(url, headers=headers, data=body, allow_redirects=True)
+        url = 'https://login.microsoftonline.com/login.srf'
+        headers = {
+            "POST": "/login.srf HTTP/1.1",
+            "Host": "login.microsoftonline.com",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+            "Accept-Encoding": "gzip, deflate",
+            "Prefer": "safe",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Length": "7181",
+            "Origin": "https://adfs.sfedu.ru",
+            "DNT": "1",
+            "Connection": "close",
+            "Referer": "https://adfs.sfedu.ru/",
+            "Upgrade-Insecure-Requests": "1",
+        }
+        body = {
+            "wa": wa,
+            "wresult": wresult,
+            "wctx": wctx,
+        }
+        res1 = s.post(url, headers=headers, data=body, allow_redirects=True)
 
-    url = 'https://aadcdn.msftauth.net/shared/1.0/content/js/ConvergedKmsi_Core_41mpWztdGVyDdwYzkhE6VQ2.js'
-    headers = {
-        "GET": "/shared/1.0/content/js/ConvergedKmsi_Core_41mpWztdGVyDdwYzkhE6VQ2.js HTTP/1.1",
-        "Host": "aadcdn.msftauth.net",
-        "Accept": "*/*",
-        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
-        "Accept-Encoding": "gzip, deflate",
-        "Prefer": "safe",
-        "Referer": "https://login.microsoftonline.com/",
-        "Origin": "https://login.microsoftonline.com/",
-        "DNT": "1",
-        "Connection": "close",
-    }
-    res1 = s.get(url, headers=headers, allow_redirects=True)
+        url = 'https://aadcdn.msftauth.net/shared/1.0/content/js/ConvergedKmsi_Core_41mpWztdGVyDdwYzkhE6VQ2.js'
+        headers = {
+            "GET": "/shared/1.0/content/js/ConvergedKmsi_Core_41mpWztdGVyDdwYzkhE6VQ2.js HTTP/1.1",
+            "Host": "aadcdn.msftauth.net",
+            "Accept": "*/*",
+            "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+            "Accept-Encoding": "gzip, deflate",
+            "Prefer": "safe",
+            "Referer": "https://login.microsoftonline.com/",
+            "Origin": "https://login.microsoftonline.com/",
+            "DNT": "1",
+            "Connection": "close",
+        }
+        res1 = s.get(url, headers=headers, allow_redirects=True)
 
-    url = 'https://aadcdn.msftauth.net/ests/2.1/content/cdnbundles/ux.converged.kmsi.strings-ru.min_losqnzte13wdgjnift3xyw2.js'
-    headers = {
-        "GET": "/ests/2.1/content/cdnbundles/ux.converged.kmsi.strings-ru.min_losqnzte13wdgjnift3xyw2.js HTTP/1.1",
-        "Host": "aadcdn.msftauth.net",
-        "Accept": "*/*",
-        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
-        "Accept-Encoding": "gzip, deflate",
-        "Prefer": "safe",
-        "Referer": "https://login.microsoftonline.com/",
-        "X-Moz": "prefetch",
-        "DNT": "1",
-        "Connection": "close",
-    }
-    res1 = s.get(url, headers=headers, allow_redirects=True)
+        url = 'https://aadcdn.msftauth.net/ests/2.1/content/cdnbundles/ux.converged.kmsi.strings-ru.min_losqnzte13wdgjnift3xyw2.js'
+        headers = {
+            "GET": "/ests/2.1/content/cdnbundles/ux.converged.kmsi.strings-ru.min_losqnzte13wdgjnift3xyw2.js HTTP/1.1",
+            "Host": "aadcdn.msftauth.net",
+            "Accept": "*/*",
+            "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+            "Accept-Encoding": "gzip, deflate",
+            "Prefer": "safe",
+            "Referer": "https://login.microsoftonline.com/",
+            "X-Moz": "prefetch",
+            "DNT": "1",
+            "Connection": "close",
+        }
+        res1 = s.get(url, headers=headers, allow_redirects=True)
 
-    url = 'https://sfedu.ru/www2/web/student/connect/azure'
-    headers = {
-        "GET": "/www2/web/student/connect/azure HTTP/1.1",
-        "Host": "sfedu.ru",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
-        "Accept-Encoding": "gzip, deflate",
-        "Prefer": "safe",
-        "Referer": "https://sfedu.ru/www/stat_pages22.show?p=STD/lks/D",
-        "X-Moz": "prefetch",
-        "DNT": "1",
-        "Connection": "close",
-    }
-    res1 = s.get(url, headers=headers, allow_redirects=False)
+        url = 'https://sfedu.ru/www2/web/student/connect/azure'
+        headers = {
+            "GET": "/www2/web/student/connect/azure HTTP/1.1",
+            "Host": "sfedu.ru",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+            "Accept-Encoding": "gzip, deflate",
+            "Prefer": "safe",
+            "Referer": "https://sfedu.ru/www/stat_pages22.show?p=STD/lks/D",
+            "X-Moz": "prefetch",
+            "DNT": "1",
+            "Connection": "close",
+        }
+        res1 = s.get(url, headers=headers, allow_redirects=False)
+        print("Первый запрос")
 
-    url = re.search(r'<title>Redirecting to (https://login\.microsoftonline\.com(/.*))</title>', res1.text).group(
-        1).replace("&amp;", "&")
-    GET = re.search(r'<title>Redirecting to (https://login\.microsoftonline\.com(/.*))</title>', res1.text).group(
-        2).replace("&amp;", "&") + " HTTP/1.1"
-    headers = {
-        "GET": GET,
-        "Host": "login.microsoftonline.com",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
-        "Accept-Encoding": "gzip, deflate",
-        "Prefer": "safe",
-        "Referer": "https://sfedu.ru/",
-        "DNT": "1",
-        "Connection": "close",
-    }
-    res1 = s.get(url, headers=headers, allow_redirects=False)
+        url = re.search(r'<title>Redirecting to (https://login\.microsoftonline\.com(/.*))</title>', res1.text).group(
+            1).replace("&amp;", "&")
+        GET = re.search(r'<title>Redirecting to (https://login\.microsoftonline\.com(/.*))</title>', res1.text).group(
+            2).replace("&amp;", "&") + " HTTP/1.1"
+        print("Первый запрос окончен")
+        headers = {
+            "GET": GET,
+            "Host": "login.microsoftonline.com",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+            "Accept-Encoding": "gzip, deflate",
+            "Prefer": "safe",
+            "Referer": "https://sfedu.ru/",
+            "DNT": "1",
+            "Connection": "close",
+        }
+        res1 = s.get(url, headers=headers,cookies=s.cookies, allow_redirects=True)
 
-    url = re.search(r'<a href="(https://sfedu.ru(.*))">here</a>.</h2>', res1.text).group(
-        1).replace("&amp;", "&")
-    GET = re.search(r'<a href="(https://sfedu.ru(.*))">here</a>.</h2>', res1.text).group(
-        2).replace("&amp;", "&") + " HTTP/1.1"
-    headers = {
-        "GET": GET,
-        "Host": "sfedu.ru",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
-        "Accept-Encoding": "gzip, deflate",
-        "Prefer": "safe",
-        "Referer": "https://sfedu.ru/",
-        "DNT": "1",
-        "Connection": "close",
-        "Upgrade-Insecure-Requests": "1"
-    }
 
-    res1 = s.get(url, headers=headers, allow_redirects=False)
+        print("Второй запрос")
+        url = re.search(r'<a href="(https://sfedu.ru(.*))">here</a>.</h2>', res1.text).group(
+            1).replace("&amp;", "&")
+        GET = re.search(r'<a href="(https://sfedu.ru(.*))">here</a>.</h2>', res1.text).group(
+            2).replace("&amp;", "&") + " HTTP/1.1"
+        print("Второй запрос окончен")
+        headers = {
+            "GET": GET,
+            "Host": "sfedu.ru",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+            "Accept-Encoding": "gzip, deflate",
+            "Prefer": "safe",
+            "Referer": "https://sfedu.ru/",
+            "DNT": "1",
+            "Connection": "close",
+            "Upgrade-Insecure-Requests": "1"
+        }
 
-    '''print()
-    print("Сайт")
-    print(res1.text)
-    print()
-    print()
-    print("Печеньки")
-    print(str(s.cookies))'''
-    url = "https://sfedu.ru" + re.search(r'<a href="(.*)">', res1.text).group(
-        1).replace("&amp;", "&")
-    GET = re.search(r'<a href="(.*)">', res1.text).group(
-        1).replace("&amp;", "&") + " HTTP/1.1"
-    headers = {
-        "GET": GET,
-        "Host": "sfedu.ru",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
-        "Accept-Encoding": "gzip, deflate",
-        "Prefer": "safe",
-        "DNT": "1",
-        "Connection": "close",
-        "Upgrade-Insecure-Requests": "1"
-    }
+        res1 = s.get(url, headers=headers, allow_redirects=False)
 
-    res1 = s.get(url, headers=headers, allow_redirects=False)
-    return s
+        url = "https://sfedu.ru" + re.search(r'<a href="(.*)">', res1.text).group(
+            1).replace("&amp;", "&")
+        GET = re.search(r'<a href="(.*)">', res1.text).group(
+            1).replace("&amp;", "&") + " HTTP/1.1"
+        headers = {
+            "GET": GET,
+            "Host": "sfedu.ru",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+            "Accept-Encoding": "gzip, deflate",
+            "Prefer": "safe",
+            "DNT": "1",
+            "Connection": "close",
+            "Upgrade-Insecure-Requests": "1"
+        }
+
+        res1 = s.get(url, headers=headers, allow_redirects=False)
+        return s
+    except Exception as e:
+        print("Ошибка в авторизации")
+        print(e.args)
+        print("Сайт\n")
+        print(res1.text)
+        f = open("error.html", 'w', encoding="utf-8")
+        f.write(res1.text)
+        f.close()
+        await bot.send_document(admin0[0], open("error.html", "br"))
 
     # print(execjs.eval(res1.text))
 
